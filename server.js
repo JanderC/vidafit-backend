@@ -10,9 +10,9 @@ const clientRoutes = require('./src/routes/clientRoutes');
 const membershipRoutes = require('./src/routes/membershipRoutes');
 const planRoutes = require('./src/routes/planRoutes');
 const productRoutes = require('./src/routes/productRoutes');
-const checkinRoutes = require('./src/routes/checkinRoutes');
+//const checkinRoutes = require('./src/routes/checkinRoutes');
 const clientProductRoutes = require('./src/routes/clientProductRoutes');
-const fingerprintRoutes = require('./src/routes/fingerprintRoutes');
+//const fingerprintRoutes = require('./src/routes/fingerprintRoutes');
 const productAssignmentRoutes = require('./src/routes/productAssignmentRoutes');
 
 const app = express();
@@ -68,9 +68,9 @@ app.use('/api/clients', clientRoutes);
 app.use('/api/memberships', membershipRoutes);
 app.use('/api/plans', planRoutes);
 app.use('/api/products', productRoutes);
-app.use('/api/checkins', checkinRoutes);
+//app.use('/api/checkins', checkinRoutes);
 app.use('/api/sales', clientProductRoutes);
-app.use('/api/fingerprint', fingerprintRoutes);
+//app.use('/api/fingerprint', fingerprintRoutes);
 app.use('/api/product-assignments', productAssignmentRoutes);
 
 // Error handling middleware
