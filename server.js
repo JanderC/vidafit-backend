@@ -17,9 +17,16 @@ const productAssignmentRoutes = require('./src/routes/productAssignmentRoutes');
 
 const app = express();
 
+// Configuración de CORS
+const corsOptions = {
+  origin: process.env.FRONTEND_URL || 'https://vidafit-frontend.vercel.app',
+  credentials: true,
+  optionsSuccessStatus: 200
+};
+
 // Middleware
 app.use(helmet());
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(morgan('dev'));
 app.use(express.json({ limit: '50mb' })); // Para base64 de imágenes y huellas
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
@@ -29,7 +36,29 @@ app.get('/health', (req, res) => {
   res.json({ 
     status: 'OK', 
     message: 'VIDA FIT API Server Running',
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || 'development'
+  });
+});
+
+// Root endpoint
+app.get('/', (req, res) => {
+  res.json({
+    success: true,
+    message: '🏋️ VIDA FIT API - Server is running',
+    version: '1.0.0',
+    endpoints: {
+      health: '/health',
+      auth: '/api/auth',
+      clients: '/api/clients',
+      memberships: '/api/memberships',
+      plans: '/api/plans',
+      products: '/api/products',
+      checkins: '/api/checkins',
+      sales: '/api/sales',
+      fingerprint: '/api/fingerprint',
+      productAssignments: '/api/product-assignments'
+    }
   });
 });
 
@@ -64,7 +93,8 @@ app.use((req, res) => {
 
 const PORT = process.env.PORT || 3001;
 
-app.listen(PORT, () => {
+// Escuchar en 0.0.0.0 para Railway
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`
   ╔═══════════════════════════════════════╗
   ║     🏋️  VIDA FIT API Server 🏋️       ║
@@ -75,6 +105,10 @@ app.listen(PORT, () => {
   ║  Fingerprint: 👆 Enabled              ║
   ╚═══════════════════════════════════════╝
   `);
+  
+  console.log(`✅ Server started successfully`);
+  console.log(`📍 URL: http://0.0.0.0:${PORT}`);
+  console.log(`🌐 Frontend URL: ${process.env.FRONTEND_URL || 'Not configured'}`);
 });
 
 module.exports = app;
