@@ -10,25 +10,42 @@ const clientRoutes = require('./src/routes/clientRoutes');
 const membershipRoutes = require('./src/routes/membershipRoutes');
 const planRoutes = require('./src/routes/planRoutes');
 const productRoutes = require('./src/routes/productRoutes');
-//const checkinRoutes = require('./src/routes/checkinRoutes');
 const clientProductRoutes = require('./src/routes/clientProductRoutes');
-//const fingerprintRoutes = require('./src/routes/fingerprintRoutes');
 const productAssignmentRoutes = require('./src/routes/productAssignmentRoutes');
 
 const app = express();
 
+// Lista de orígenes permitidos
+const allowedOrigins = [
+  'http://localhost:3000',
+  'http://localhost:5173',
+  'https://vidafit-frontend.vercel.app',
+  process.env.FRONTEND_URL
+].filter(Boolean); // Elimina valores undefined
+
 // Configuración de CORS
 const corsOptions = {
-  origin: process.env.FRONTEND_URL || 'https://vidafit-frontend.vercel.app',
+  origin: function (origin, callback) {
+    // Permitir peticiones sin origin (como Postman o apps móviles)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('No permitido por CORS'));
+    }
+  },
   credentials: true,
-  optionsSuccessStatus: 200
+  optionsSuccessStatus: 200,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 };
 
 // Middleware
 app.use(helmet());
 app.use(cors(corsOptions));
 app.use(morgan('dev'));
-app.use(express.json({ limit: '50mb' })); // Para base64 de imágenes y huellas
+app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
 // Health check
@@ -54,9 +71,7 @@ app.get('/', (req, res) => {
       memberships: '/api/memberships',
       plans: '/api/plans',
       products: '/api/products',
-      checkins: '/api/checkins',
       sales: '/api/sales',
-      fingerprint: '/api/fingerprint',
       productAssignments: '/api/product-assignments'
     }
   });
@@ -68,9 +83,7 @@ app.use('/api/clients', clientRoutes);
 app.use('/api/memberships', membershipRoutes);
 app.use('/api/plans', planRoutes);
 app.use('/api/products', productRoutes);
-//app.use('/api/checkins', checkinRoutes);
 app.use('/api/sales', clientProductRoutes);
-//app.use('/api/fingerprint', fingerprintRoutes);
 app.use('/api/product-assignments', productAssignmentRoutes);
 
 // Error handling middleware
@@ -93,7 +106,6 @@ app.use((req, res) => {
 
 const PORT = process.env.PORT || 3001;
 
-// Escuchar en 0.0.0.0 para Railway
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`
   ╔═══════════════════════════════════════╗
@@ -101,8 +113,8 @@ app.listen(PORT, '0.0.0.0', () => {
   ╠═══════════════════════════════════════╣
   ║  Server running on port: ${PORT}       ║
   ║  Environment: ${process.env.NODE_ENV || 'development'}           ║
-  ║  Time: ${new Date().toLocaleString('es-DO')}  ║
-  ║  Fingerprint: 👆 Enabled              ║
+  ║  CORS enabled for:                    ║
+  ${allowedOrigins.map(o => `  ║  - ${o}`).join('\n')}
   ╚═══════════════════════════════════════╝
   `);
   
