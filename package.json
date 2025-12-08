@@ -1,7 +1,7 @@
 {
   "name": "vidafit-backend",
   "version": "1.0.0",
-  "description": "Backend API para sistema de gimnasio VIDA FIT con integración de lector de huellas HID",
+  "description": "Backend API para sistema de gimnasio VIDA FIT",
   "main": "server.js",
   "type": "commonjs",
   "scripts": {
@@ -26,9 +26,7 @@
     "helmet": "^7.1.0",
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
-    "node-hid": "^2.2.0",
-    "pg": "^8.11.3",
-    "usb": "^2.11.0"
+    "pg": "^8.11.3"
   },
   "devDependencies": {
     "nodemon": "^3.0.2"
