@@ -108,7 +108,6 @@ app.listen(PORT, '0.0.0.0', () => {
   
   console.log(`✅ Server started successfully`);
   console.log(`📍 URL: http://0.0.0.0:${PORT}`);
-  console.log(`🌐 Frontend URL: ${process.env.FRONTEND_URL || 'Not configured'}`);
 });
 
 module.exports = app;
